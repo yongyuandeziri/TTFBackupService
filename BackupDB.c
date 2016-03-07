@@ -4,6 +4,7 @@
 #include <string.h>
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
+#include "BackupDB.h"
 
 #include <sys/types.h>
 #include <fcntl.h>
@@ -67,7 +68,13 @@ xmlChar* EmailServer="";
 xmlChar SendEmailCMD[512]={0};
 xmlChar* ServerInfo="";
 FILE *logfile;
+
+#ifndef Debug
 #define myprintf(fmt,arg...) fprintf(logfile,fmt,##arg)
+#else
+#define myprintf(fmt,arg...) printf(fmt,##arg)
+#endif
+
 
 void dechar(char *str,int len)//remove space,tab,enter
 {  
@@ -529,7 +536,7 @@ while(1)
              while((g_row=mysql_fetch_row(g_res)))
              {
                 strcpy(DataBaseInfo[j].tables[k].tablename,g_row[0]);
-                myprintf("%-*s",15,g_row[0]);
+                myprintf("%s\n",g_row[0]);
                 k++;
              }
              DataBaseInfo[j].dbtable_num=k;
@@ -542,6 +549,7 @@ while(1)
             {
                 sprintf(sql,"select max(id) from ");
                 strcat(sql,DataBaseInfo[j].tables[k].tablename);
+                printf("sql %s\n",sql);
                 if(executesql(sql))
                 {
                     print_mysql_error(NULL);
