@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Config>
+  <ServerInfo>"Factory=  IP=  User=  "</ServerInfo>
+  <BackPath>/home/asusftp/</BackPath>
+  <LogPath>/home/asusftp/log/</LogPath>
+  <Interval>10000</Interval>
+  <MaxRows>100</MaxRows>
+  <EmailServer>smtp.126.com</EmailServer>
+  <EmailFromAddr>TTFBackupDB@126.com</EmailFromAddr>
+  <EmailFromName>TTFBackupDB</EmailFromName>
+  <EmailFromPassword>ASUSTDC2016</EmailFromPassword>
+  <EmailToAddr>ward_du@asus.com 1012431828@qq.com</EmailToAddr>
+  <EmailTitle>"TTFServer Warning"</EmailTitle>
+  <EmailBodyPath>/home/asusftp/log/mail.txt</EmailBodyPath>
+  <EmailConfig>tls=auto</EmailConfig>
+  <MySQL>
+    <Name>ITC</Name>
+    <Server>127.0.0.1</Server>
+    <Port>3306</Port>
+    <User>root</User>
+    <Password>123456</Password>
+    <Project>
+      <Name>H81M-K</Name>
+      <Database>tms</Database>
+    </Project>
+    <Project>
+      <Name>Test</Name>
+      <Database>mytest</Database>
+    </Project>
+  </MySQL>
+  <MySQL>
+    <Name>Tony</Name>
+    <Server>10.64.58.199</Server>
+    <Port>3306</Port>
+    <User>ASUSTDC</User>
+    <Password>asustdc</Password>
+    <Project>
+      <Name>ttfdb</Name>
+      <Database>ttfdb</Database>
+    </Project>
+  </MySQL>
+</Config>
