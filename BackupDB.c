@@ -93,7 +93,7 @@ void print_mysql_error(const char *msg)
     if (msg)
         myprintf("%s: %s\n", msg, mysql_error(g_conn));
      else
-        puts(mysql_error(g_conn));
+        myprintf("%s\n",mysql_error(g_conn));
  }
  
 int executesql(const char * sql)
@@ -541,7 +541,7 @@ while(1)
              int iNum_rows=mysql_num_rows(g_res);
              myprintf("------------%s------------ %d tables\n",DataBaseInfo[j].database,iNum_rows);
              //myprintf tables
-             k=0;myprintf("\t");
+             k=0;
              while((g_row=mysql_fetch_row(g_res)))
              {
                 strcpy(DataBaseInfo[j].tables[k].tablename,g_row[0]);
@@ -558,21 +558,28 @@ while(1)
             {
                 sprintf(sql,"select max(id) from ");
                 strcat(sql,DataBaseInfo[j].tables[k].tablename);
-                printf("sql %s\n",sql);
                 if(executesql(sql))
                 {
                     print_mysql_error(NULL);
+                    DataBaseInfo[j].tables[k].maxid=0;
+                    continue;
                 }
 
                 g_res=mysql_use_result(g_conn);
                 g_row=mysql_fetch_row(g_res);
-                DataBaseInfo[j].tables[k].maxid=atoi(g_row[0]);
+                if(g_row[0]=='\0') 
+                {
+                   DataBaseInfo[j].tables[k].maxid=0;    
+                }
+                else
+                {
+                   DataBaseInfo[j].tables[k].maxid=atoi(g_row[0]); 
+                }
                 myprintf("%d\t",DataBaseInfo[j].tables[k].maxid);
                 mysql_free_result(g_res);
             }
             myprintf("\n");
             mysql_close(g_conn);
-
         /*********get psid *********/
 
             if(check_file_exist(DataBaseInfo[j].Idbackpath)==0)//id file exist
@@ -664,7 +671,6 @@ while(1)
             }
             else //id file not exist,psid is all 0
             {
-        
                 /*
                 * scan every table and backup
                 */
