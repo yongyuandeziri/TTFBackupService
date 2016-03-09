@@ -68,6 +68,8 @@ xmlChar* EmailServer="";
 xmlChar SendEmailCMD[512]={0};
 xmlChar* ServerInfo="";
 FILE *logfile;
+int logfile_num;
+int isempty=0;
 
 #ifndef Debug
 #define myprintf(fmt,arg...) fprintf(logfile,fmt,##arg)
@@ -327,6 +329,7 @@ int check_hddisk_remain()
     return atoi(GetValue);
 }
 
+
 int check_process_is_running()
 {
     return atoi(Exec_Shell_Cmd("ps -ef | grep BackupDB | grep config.xml |wc -l"));
@@ -401,6 +404,7 @@ long rotate_log(xmlChar* logfilepath)
     if(check_file_exist(logfilepath)==-1) 
     {
         myprintf("can't find %s\n",logfilepath);
+        fsync(logfile_num);
         fclose(logfile);
         exit(0);
     }
@@ -417,6 +421,7 @@ long rotate_log(xmlChar* logfilepath)
     if(filesize >= 4194304)
      {
         xmlChar logname[1024]={0};xmlChar datename[512]={0};xmlChar timename[512]={0};
+        fsync(logfile_num);
         fclose(logfile);//close fd
 
         strcpy(logname,"mv ");
@@ -447,13 +452,14 @@ int main(int argc, char **argv)
     xmlDocPtr doc;xmlNodePtr cur;
     //open /home/asusftp/log/.log.txt,this is for BackupDB log
     logfile=fopen("/home/asusftp/log/.log.txt","a");
-
+    logfile_num=fileno(logfile);
 
     //check if other same process is running(grep also should add 1)
     myprintf("check_process_is_running() %d\n", check_process_is_running());
     if(check_process_is_running()>=3) 
     {
         myprintf("other same process is already running\n");
+        fsync(logfile_num);
         fclose(logfile);
         exit(0);
     }
@@ -463,6 +469,7 @@ int main(int argc, char **argv)
     if(doc==NULL)
     {
         myprintf("config.xml can't be parsed successfully.\n");
+        fsync(logfile_num);
         fclose(logfile);
         exit(1);
     }
@@ -473,6 +480,7 @@ int main(int argc, char **argv)
     {
         myprintf("config.xml is empty.\n");
         xmlFreeDoc(doc);
+        fsync(logfile_num);
         fclose(logfile);
         exit(1);
     }
@@ -482,6 +490,7 @@ int main(int argc, char **argv)
     {
         myprintf("config.xml has the wrong type,root node!=Config\n");
         xmlFreeDoc(doc);
+        fsync(logfile_num);
         fclose(logfile);
         exit(1);
     }
@@ -753,8 +762,34 @@ while(1)
         myprintf("HardDisk remain lessthen 30!!!");
         myprintf("I Have sent mail to Master");
         myprintf("\n");
+        fsync(logfile_num);
         fclose(logfile);
         exit(1);
+    }
+
+    //check if database has no data per day,send mail to master
+    if(check_file_exist("/home/asusftp/.empty")==0 && isempty==0)
+    {
+        //dump host info
+        strcpy(server_info,"echo ");
+        strcat(server_info,ServerInfo);
+        strcat(server_info," ");
+        strcat(server_info," >>");
+        strcat(server_info,EmailBodyPath);
+        myprintf("server info %s\n",server_info);
+        Exec_Shell_Cmd(server_info);
+
+        strcpy(server_info,"echo /*No Data Today/* >> ");
+        strcat(server_info,EmailBodyPath);
+        Exec_Shell_Cmd(server_info);
+        
+        usleep(100*1000);
+        Exec_Shell_Cmd(SendEmailCMD);
+        myprintf("%s\n",SendEmailCMD);
+        myprintf("No Data Found Today!");
+        myprintf("I Have sent mail to Master");
+        myprintf("\n");
+        isempty=1;
     }
 
     //chek if stop flag is on
@@ -765,6 +800,7 @@ while(1)
     {
         myprintf("stop flag has been setup,stop....\n");
         printf("stop flag has been setup,stop....\n");
+        fsync(logfile_num);
         fclose(logfile);
         exit(0);
     }
@@ -777,6 +813,7 @@ while(1)
     usleep(interval*1000);
 }
 
+fsync(logfile_num);
 fclose(logfile);
 exit(0);
 
