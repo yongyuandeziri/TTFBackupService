@@ -6,9 +6,9 @@
   <Interval>10000</Interval>
   <MaxRows>100</MaxRows>
   <EmailServer>smtp.126.com</EmailServer>
-  <EmailFromAddr>TTFBackupDB@126.com</EmailFromAddr>
-  <EmailFromName>TTFBackupDB</EmailFromName>
-  <EmailFromPassword>ASUSTDC2016</EmailFromPassword>
+  <EmailFromAddr>nuaaduwei@126.com</EmailFromAddr>
+  <EmailFromName>nuaaduwei</EmailFromName>
+  <EmailFromPassword>1and1is2no</EmailFromPassword>
   <EmailToAddr>ward_du@asus.com 1012431828@qq.com</EmailToAddr>
   <EmailTitle>"TTFServer Warning"</EmailTitle>
   <EmailBodyPath>/home/asusftp/log/mail.txt</EmailBodyPath>

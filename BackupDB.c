@@ -450,6 +450,7 @@ int main(int argc, char **argv)
 {
     int j,k,num;char *RetVal;char sql[MAX_BUF_SIZE];
     xmlDocPtr doc;xmlNodePtr cur;
+    int t=0;
     //open /home/asusftp/log/.log.txt,this is for BackupDB log
     logfile=fopen("/home/asusftp/log/.log.txt","a");
     logfile_num=fileno(logfile);
@@ -520,6 +521,7 @@ int main(int argc, char **argv)
 
 while(1)
 {
+    myprintf("logtime:%s\n", Exec_Shell_Cmd("date +%Y%m%d_%H%M%S"));
     for(j=0;j<i;j++)//i=total database num
     {        
         /*********Init database connection*********/    
@@ -527,6 +529,22 @@ while(1)
         if(!mysql_real_connect(g_conn, DataBaseInfo[j].host, DataBaseInfo[j].username, DataBaseInfo[j].password, DataBaseInfo[j].database, atoi(DataBaseInfo[j].port), NULL, 0)) // 如果失败
         {
             myprintf("Fail to connect db %s...\n",DataBaseInfo[j].database);
+	    //connect to mysql fail,try to send email to asus
+    	    xmlChar connect_mysql[512]={0};
+	    strcpy(connect_mysql,"echo ");
+	    strcat(connect_mysql,"connect mysql fail");
+	    strcat(connect_mysql," ");
+	    strcat(connect_mysql," >>");
+	    strcat(connect_mysql,EmailBodyPath);
+	    myprintf("server info %s\n",connect_mysql);
+	    Exec_Shell_Cmd(connect_mysql);
+	    usleep(100*1000);
+	    if(t<3)
+	    {
+		printf("send email %s\n",SendEmailCMD);
+		Exec_Shell_Cmd(SendEmailCMD);	
+		t++;
+	    }
             continue;
         }
         else
@@ -539,8 +557,8 @@ while(1)
              }
              g_res=mysql_store_result(g_conn);
              int iNum_rows=mysql_num_rows(g_res);
-             myprintf("------------%s------------ %d tables\n",DataBaseInfo[j].database,iNum_rows);
-             //myprintf tables
+             myprintf("------------%s------------ %d tables\n",DataBaseInfo[j].database,iNum_rows);  
+	//myprintf tables
              k=0;
              while((g_row=mysql_fetch_row(g_res)))
              {

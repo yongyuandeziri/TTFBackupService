@@ -1,1 +1,0 @@
-gcc BackupDB.c -o BackupDB -I/usr/include/libxml2 -L /usr/lib/x86_64-linux-gnu -lxml2 -I/usr/include/mysql -L /usr/lib/mysql -lmysqlclient

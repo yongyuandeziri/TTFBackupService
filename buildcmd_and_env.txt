@@ -1,0 +1,22 @@
+host:ubuntu14.04 desktop
+
+build_cmd:
+gcc BackupDB.c -o BackupDB -I/usr/include/libxml2 -L /usr/lib/x86_64-linux-gnu -lxml2 -I/usr/include/mysql -L /usr/lib/mysql -lmysqlclient
+
+
+
+evn_build:
+sudo apt-get install libxml2
+
+sudo apt-get install libxml2-dev
+
+
+sudo apt-get install mysql-server 
+
+sudo apt-get install mysql-client
+
+sudo apt-get install libmysqlclient15-dev
+
+
+install sublime3:
+
