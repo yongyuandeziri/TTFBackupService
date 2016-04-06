@@ -528,20 +528,20 @@ while(1)
         g_conn = mysql_init(NULL);
         if(!mysql_real_connect(g_conn, DataBaseInfo[j].host, DataBaseInfo[j].username, DataBaseInfo[j].password, DataBaseInfo[j].database, atoi(DataBaseInfo[j].port), NULL, 0)) // 如果失败
         {
-            myprintf("Fail to connect db %s...\n",DataBaseInfo[j].database);
-	    //connect to mysql fail,try to send email to asus
-    	    xmlChar connect_mysql[512]={0};
-	    strcpy(connect_mysql,"echo ");
-	    strcat(connect_mysql,ServerInfo);
-	    strcat(connect_mysql,"connect mysql fail");
-	    strcat(connect_mysql," ");
-	    strcat(connect_mysql," >>");
-	    strcat(connect_mysql,EmailBodyPath);
-	    myprintf("server info %s\n",connect_mysql);
-	    Exec_Shell_Cmd(connect_mysql);
-	    usleep(100*1000);
 	    if(t<3)
 	    {
+		  //connect to mysql fail,try to send email to asus
+	    	xmlChar connect_mysql[512]={0};
+		strcpy(connect_mysql,"echo ");
+		strcat(connect_mysql,ServerInfo);
+		strcat(connect_mysql,"connect mysql fail");
+		strcat(connect_mysql," ");
+		strcat(connect_mysql," >>");
+		strcat(connect_mysql,EmailBodyPath);
+		myprintf("server info %s\n",connect_mysql);
+		Exec_Shell_Cmd(connect_mysql);
+		usleep(100*1000);
+	    	myprintf("Fail to connect db %s...\n",DataBaseInfo[j].database);
 		printf("send email %s\n",SendEmailCMD);
 		Exec_Shell_Cmd(SendEmailCMD);	
 		t++;
