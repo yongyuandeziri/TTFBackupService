@@ -21,3 +21,4 @@ V1.2.0 update BackupDB
 
 V1.2.1 "fail to connect to mysql" only show three times .
 
+V1.2.2  Update BacukuDB  .
