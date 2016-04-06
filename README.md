@@ -15,3 +15,4 @@ TransportData.sh  ------------use a shell to backup data
 # Latest version
 V1.1.0  add logtime and  mysql lost connect mail warning
 
+V1.1.1  add systeminfo into mail.txt

@@ -532,6 +532,7 @@ while(1)
 	    //connect to mysql fail,try to send email to asus
     	    xmlChar connect_mysql[512]={0};
 	    strcpy(connect_mysql,"echo ");
+	    strcat(connect_mysql,ServerInfo);
 	    strcat(connect_mysql,"connect mysql fail");
 	    strcat(connect_mysql," ");
 	    strcat(connect_mysql," >>");
