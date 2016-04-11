@@ -528,7 +528,7 @@ while(1)
         g_conn = mysql_init(NULL);
         if(!mysql_real_connect(g_conn, DataBaseInfo[j].host, DataBaseInfo[j].username, DataBaseInfo[j].password, DataBaseInfo[j].database, atoi(DataBaseInfo[j].port), NULL, 0)) // 如果失败
         {
-	    if(t<3)
+	    if(t>=180)//about half a hour can't connect  to mysql
 	    {
 		  //connect to mysql fail,try to send email to asus
 	    	xmlChar connect_mysql[512]={0};
@@ -543,9 +543,10 @@ while(1)
 		usleep(100*1000);
 	    	myprintf("Fail to connect db %s...\n",DataBaseInfo[j].database);
 		printf("send email %s\n",SendEmailCMD);
-		Exec_Shell_Cmd(SendEmailCMD);	
-		t++;
+		Exec_Shell_Cmd(SendEmailCMD);
+		t=0;		
 	    }
+	  t++;
             continue;
         }
         else
